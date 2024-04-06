@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'dadosPagina/tela_principal.dart';
 import 'dadosPagina/tela_financeira.dart';
 
+var telaAtual;
+
 void main() {
   runApp(const MyApp());
 }
+
+GlobalKey<MyHomePageState> myGlobalKey = GlobalKey<MyHomePageState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -18,61 +22,69 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromRGBO(203, 109, 182, 100)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'JOI ❤️'),
+      home: MyHomePage(key: myGlobalKey),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  bool _exibirPaginaPrincipal = true;
-  bool _exibirPaginaFinanceiro = false;
-  bool _exibirPaginaLembretes = false;
+class MyHomePageState extends State<MyHomePage> {
+  bool exibirPaginaPrincipal = true;
+  bool exibirPaginaFinanceiro = false;
+  bool exibirPaginaLembretes = false;
 
-  List<String> botaoPaginaAtual = [];
-
-  void _actionPaginaPrincipal() {
+  void actionPaginaPrincipal() {
     setState(() {
-      _exibirPaginaPrincipal = true;
-      _exibirPaginaFinanceiro = false;
-      _exibirPaginaLembretes = false;
+      exibirPaginaPrincipal = true;
+      exibirPaginaFinanceiro = false;
+      exibirPaginaLembretes = false;
     });
   }
 
-  void _actionPaginaFinanceiro() {
+  void actionPaginaFinanceiro() {
     setState(() {
-      _exibirPaginaPrincipal = false;
-      _exibirPaginaFinanceiro = true;
-      _exibirPaginaLembretes = false;
+      exibirPaginaPrincipal = false;
+      exibirPaginaFinanceiro = true;
+      exibirPaginaLembretes = false;
     });
   }
 
-  void _actionPaginaLembretes() {
+  void actionPaginaLembretes() {
     setState(() {
-      _exibirPaginaPrincipal = false;
-      _exibirPaginaFinanceiro = false;
-      _exibirPaginaLembretes = true;
+      exibirPaginaPrincipal = false;
+      exibirPaginaFinanceiro = false;
+      exibirPaginaLembretes = true;
+    });
+  }
+
+  void atualizarPagina(var telaAtualizada) {
+    setState(() {
+      telaAtual = telaAtualizada;
+
+      exibirPaginaPrincipal = false;
+      exibirPaginaFinanceiro = false;
+      exibirPaginaLembretes = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     // Seta a pagina principal como a inicial
-    botaoPaginaAtual = botoesPrincipal;
+    //telaAtual = retornarTelaPrincipal();
 
     // Seleção da exibição da tela
-    if (_exibirPaginaPrincipal) {
-      botaoPaginaAtual = botoesPrincipal;
-    } else if (_exibirPaginaFinanceiro) {
-      botaoPaginaAtual = botoesFinanceira;
+    if (exibirPaginaPrincipal) {
+      telaAtual = retornarTelaPrincipal();
+    } else if (exibirPaginaFinanceiro) {
+      telaAtual = retornarTelaFinanceira();
+    } else if (exibirPaginaLembretes) {
+      //telaAtual = retornarTelaLembretes();
     }
 
     return Scaffold(
@@ -98,10 +110,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.accessibility_new),
+              leading: const Icon(Icons.favorite),
               title: const Text('Principal'),
               onTap: () {
-                _actionPaginaPrincipal();
+                actionPaginaPrincipal();
                 Navigator.pop(context);
               },
             ),
@@ -109,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.account_balance_wallet),
               title: const Text('Financeiro'),
               onTap: () {
-                _actionPaginaFinanceiro();
+                actionPaginaFinanceiro();
                 Navigator.pop(context);
               },
             ),
@@ -117,38 +129,14 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: const Icon(Icons.access_alarm),
               title: const Text('Lembretes'),
               onTap: () {
-                _actionPaginaLembretes();
+                actionPaginaLembretes();
                 Navigator.pop(context);
               },
             ),
           ],
         ),
       ),
-      body: Container(
-        color: Colors.black87,
-        child: GridView.builder(
-          itemCount: botaoPaginaAtual.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 colunas
-            mainAxisSpacing: 13.0, // Espaçamento vertical entre os itens
-            crossAxisSpacing: 13.0, // Espaçamento horizontal entre os itens
-            childAspectRatio: 1.5, // Relação entre a altura e a largura dos itens
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            return FloatingActionButton(
-              onPressed: () {},
-              tooltip: 'Increment',
-              child: Text(
-                botaoPaginaAtual.elementAt(index),
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 21,
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+      body: telaAtual,
     );
   }
 }
