@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dadosPagina/tela_principal.dart';
 import 'dadosPagina/tela_financeira.dart';
+import 'dadosPagina/tela_treinamento.dart';
 
 var telaAtual;
 
@@ -38,12 +39,14 @@ class MyHomePageState extends State<MyHomePage> {
   bool exibirPaginaPrincipal = true;
   bool exibirPaginaFinanceiro = false;
   bool exibirPaginaLembretes = false;
+  bool exibirPaginaTreinamento = false;
 
   void actionPaginaPrincipal() {
     setState(() {
       exibirPaginaPrincipal = true;
       exibirPaginaFinanceiro = false;
       exibirPaginaLembretes = false;
+      exibirPaginaTreinamento = false;
     });
   }
 
@@ -52,6 +55,7 @@ class MyHomePageState extends State<MyHomePage> {
       exibirPaginaPrincipal = false;
       exibirPaginaFinanceiro = true;
       exibirPaginaLembretes = false;
+      exibirPaginaTreinamento = false;
     });
   }
 
@@ -60,6 +64,16 @@ class MyHomePageState extends State<MyHomePage> {
       exibirPaginaPrincipal = false;
       exibirPaginaFinanceiro = false;
       exibirPaginaLembretes = true;
+      exibirPaginaTreinamento = false;
+    });
+  }
+
+  void actionPaginaTreinamento() {
+    setState(() {
+      exibirPaginaPrincipal = false;
+      exibirPaginaFinanceiro = false;
+      exibirPaginaLembretes = false;
+      exibirPaginaTreinamento = true;
     });
   }
 
@@ -70,6 +84,7 @@ class MyHomePageState extends State<MyHomePage> {
       exibirPaginaPrincipal = false;
       exibirPaginaFinanceiro = false;
       exibirPaginaLembretes = false;
+      exibirPaginaTreinamento = false;
     });
   }
 
@@ -85,6 +100,8 @@ class MyHomePageState extends State<MyHomePage> {
       telaAtual = retornarTelaFinanceira();
     } else if (exibirPaginaLembretes) {
       //telaAtual = retornarTelaLembretes();
+    } else if (exibirPaginaTreinamento) {
+      telaAtual = retornarTelaTreinamento();
     }
 
     return Scaffold(
@@ -133,6 +150,14 @@ class MyHomePageState extends State<MyHomePage> {
                 Navigator.pop(context);
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.fitness_center),
+              title: const Text('Treinamento'),
+              onTap: () {
+                actionPaginaTreinamento();
+                Navigator.pop(context);
+              },
+            )
           ],
         ),
       ),
